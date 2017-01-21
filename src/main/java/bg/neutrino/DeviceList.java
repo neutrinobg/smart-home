@@ -24,6 +24,8 @@ public class DeviceList {
         if (hmap.isEmpty()) {
             DeviceInterface device = new HS110("84.40.125.153");
             hmap.put(device.getInfo().get("deviceId"), device);
+            device = new HS110("192.168.0.125");
+            hmap.put(device.getInfo().get("deviceId"), device);
         }
         return hmap;
     }

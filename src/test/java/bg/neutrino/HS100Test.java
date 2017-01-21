@@ -30,6 +30,18 @@ public class HS100Test {
     @BeforeClass
     public static void setUpClass() {
         instance = new HS110("84.40.125.153");
+        try {
+			instance.nightModeOff();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        try {
+			instance.switchOn();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
     
     @AfterClass
@@ -48,6 +60,12 @@ public class HS100Test {
         } catch (IOException ex) {
             Logger.getLogger(HS100Test.class.getName()).log(Level.SEVERE, null, ex);
         }
+        try {
+			instance.switchOn();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 
     /**
@@ -112,15 +130,12 @@ public class HS100Test {
      * Test of isPresent method, of class HS100.
      */
     @Test
-    @Ignore
     public void testIsPresent_0args() {
         System.out.println("isPresent");
-        HS100 instance = null;
-        boolean expResult = false;
+        HS100 instance = new HS110("84.40.125.153");
+        boolean expResult = true;
         boolean result = instance.isPresent();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
@@ -143,30 +158,24 @@ public class HS100Test {
      * Test of switchOn method, of class HS100.
      */
     @Test
-    @Ignore
     public void testSwitchOn() throws Exception {
         System.out.println("switchOn");
-        HS100 instance = null;
-        boolean expResult = false;
+        HS100 instance = new HS110("84.40.125.153");
+        boolean expResult = true;
         boolean result = instance.switchOn();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
      * Test of switchOff method, of class HS100.
      */
     @Test
-    @Ignore
     public void testSwitchOff() throws Exception {
         System.out.println("switchOff");
-        HS100 instance = null;
-        boolean expResult = false;
+        HS100 instance = new HS110("84.40.125.153");
+        boolean expResult = true;
         boolean result = instance.switchOff();
         assertEquals(expResult, result);
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
     }
 
     /**
