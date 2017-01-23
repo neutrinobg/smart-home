@@ -18,29 +18,28 @@ import java.util.Set;
  */
 public class DeviceList {
 
-    private static HashMap<String, DeviceInterface> hmap = new HashMap<String, DeviceInterface>();
+	private static HashMap<String, DeviceInterface> hmap = new HashMap<String, DeviceInterface>();
 
-    public static HashMap<String, DeviceInterface> get() throws IOException {
-        if (hmap.isEmpty()) {
-            DeviceInterface device = new HS110("84.40.125.153");
-            hmap.put(device.getInfo().get("deviceId"), device);
-            device = new HS110("192.168.0.125");
-            hmap.put(device.getInfo().get("deviceId"), device);
-        }
-        return hmap;
-    }
+	public static HashMap<String, DeviceInterface> get() throws IOException {
+		if (hmap.isEmpty()) {
+			DeviceInterface device;
+			device = new HS110("192.168.0.125");
+			hmap.put(device.getInfo().get("deviceId"), device);
+		}
+		return hmap;
+	}
 
-    public static ArrayList<DeviceInterface> getAsArrayList() throws IOException {
-        DeviceList.get();
-        ArrayList<DeviceInterface> deviceList = new ArrayList<DeviceInterface>();
+	public static ArrayList<DeviceInterface> getAsArrayList() throws IOException {
+		DeviceList.get();
+		ArrayList<DeviceInterface> deviceList = new ArrayList<DeviceInterface>();
 
-        Set set = hmap.entrySet();
-        Iterator iterator = set.iterator();
-        while (iterator.hasNext()) {
-            Map.Entry mentry = (Map.Entry) iterator.next();
-            deviceList.add((DeviceInterface) mentry.getValue());
-        }
+		Set set = hmap.entrySet();
+		Iterator iterator = set.iterator();
+		while (iterator.hasNext()) {
+			Map.Entry mentry = (Map.Entry) iterator.next();
+			deviceList.add((DeviceInterface) mentry.getValue());
+		}
 
-        return deviceList;
-    }
+		return deviceList;
+	}
 }

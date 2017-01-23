@@ -133,6 +133,7 @@ public class HS100Test {
     public void testIsPresent_0args() {
         System.out.println("isPresent");
         HS100 instance = new HS110("84.40.125.153");
+        //instance = new HS110("192.168.0.125");
         boolean expResult = true;
         boolean result = instance.isPresent();
         assertEquals(expResult, result);
