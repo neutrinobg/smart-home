@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 /**
@@ -21,10 +22,14 @@ public class DeviceList {
 	private static HashMap<String, DeviceInterface> hmap = new HashMap<String, DeviceInterface>();
 
 	public static HashMap<String, DeviceInterface> get() throws IOException {
+		DeviceInterface device;
+		DeviceProperties dp = new DeviceProperties();
 		if (hmap.isEmpty()) {
-			DeviceInterface device;
-			device = new HS110("192.168.0.125");
-			hmap.put(device.getInfo().get("deviceId"), device);
+			String[] deviceIPs = dp.get().getProperty("device.list").split("\\|");
+			for (String deviceIP : deviceIPs) {
+				device = new HS110(deviceIP);
+				hmap.put(device.getInfo().get("deviceId"), device);
+			}
 		}
 		return hmap;
 	}

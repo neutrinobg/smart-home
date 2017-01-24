@@ -19,7 +19,7 @@ public class DeviceProperties {
     private String fileName;
 
     public DeviceProperties() {
-        this.fileName = "devices.properties";
+        this.fileName = "/devices.properties";
     }
 
     public String getFileName() {
@@ -36,7 +36,7 @@ public class DeviceProperties {
 
         try {
 
-            input = new FileInputStream(this.fileName);
+            input = DeviceProperties.class.getResourceAsStream(this.fileName);
 
             // load a properties file
             prop.load(input);
