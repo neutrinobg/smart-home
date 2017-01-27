@@ -1,31 +1,121 @@
 <!DOCTYPE html>
 <html layout:decorator="layout">
-    <head>
-        <title>Devices</title>
-        <link href="../../../resources/static/css/bootstrap.min.css" rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}"/>
-        <link href="../../../resources/static/css/core.css" rel="stylesheet" media="screen" th:href="@{/css/core.css}"/>
-        <script src="http://code.jquery.com/jquery-latest.min.js"></script>
-        <script src="../../../resources/static/js/bootstrap.min.js" th:src="@{/js/bootstrap.min.js}"></script>
-        <script src="../../../resources/static/js/devices.js" th:src="@{/js/devices.js}"></script>
-    </head>
-    <body>
+<head>
+<title>Devices</title>
+<link href="../../../resources/static/css/bootstrap.min.css"
+	rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}" />
+<link href="../../../resources/static/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/css/core.css}" />
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="../../../resources/static/js/bootstrap.min.js"
+	th:src="@{/js/bootstrap.min.js}"></script>
+<script src="../../../resources/static/js/devices.js"
+	th:src="@{/js/devices.js}"></script>
+<style>
+/* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+#map {
+	width: 100%;
+	height: 100px;
+	background-color: grey;
+}
+</style>
+</head>
+<body>
 
-        <!--/*  */-->
-        <div layout:fragment="content">
-            <div class="page-header">
-                <h1>Devices</h1>
-            </div>
+	<!--/*  */-->
+	<div layout:fragment="content">
+		<div class="page-header">
+			<h1>Devices</h1>
+		</div>
 
-            <div class="panel panel-primary" th:each="device,iter : ${devices}">
-                <input class="device-id" type="hidden" value="" th:value='${device.getInfo().get("deviceId")}' />
-                <div class="panel-heading device-name" th:text='${device.getInfo().get("alias")}'>Panel heading without title</div>
-                <div class="panel-body">
-                    Panel content
-                </div>
-                <div class="panel-footer" th:text='${device.getInfo().get("model") + " - " + device.getInfo().get("dev_name")}'>Panel footer</div>
-            </div>
+		<div class="panel panel-primary" th:each="device,iter : ${devices}"
+			th:attr='data-deviceId=${device.getInfo().get("deviceId")}'>
+			<input class="device-id" type="hidden" value=""
+				th:value='${device.getInfo().get("deviceId")}' />
+			<div class="panel-heading device-alias"
+				th:text='${device.getInfo().get("alias")}'>Panel heading
+				without title</div>
+			<div class="panel-body">
+				<div class="row">
+					<div class="col-xs-12 col-md-7 col-lg-6">
+						<dl class="dl-horizontal">
+							<dt>
+								Device is <span class="relay-state"
+									th:text='${device.getInfo().get("relay_state") == "1"} ? ON : OFF'></span>
+							</dt>
+							<dd>
+								<a href="#" class="btn btn-md" role="button"
+									th:classappend='${device.getInfo().get("relay_state") == "1"} ? btn-success : btn-danger'><span
+									class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+							</dd>
+							<dt>
+								LED is <span class="led-off"
+									th:text='${device.getInfo().get("led_off") == "0"} ? ON : OFF'></span>
+							</dt>
+							<dd>
+								<a href="#" class="btn btn-md" role="button"
+									th:classappend='${device.getInfo().get("led_off") == "0"} ? btn-success : btn-danger'><span
+									class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+							</dd>
+							<dt>Current Consumption</dt>
+							<dd>
+								<span class="now-power"
+									th:text='${device.getEnergyData().getNowPower()}'>0</span> W
+							</dd>
+							<dt>Total Consumption</dt>
+							<dd>
+								<span class="energy"
+									th:text='${device.getEnergyData().getEnergy()}'>0</span> kWh
+							</dd>
+							<dt>Current Voltage</dt>
+							<dd>
+								<span class="now-voltage"
+									th:text='${device.getEnergyData().getNowVoltage()}'>0</span> V
+							</dd>
+							<dt>Current</dt>
+							<dd>
+								<span class="now-current"
+									th:text='${device.getEnergyData().getNowCurrent()}'>0</span>
+							</dd>
+						</dl>
+					</div>
+					<div class="col-xs-12 col-md-5 col-lg-6">
+						<div id="map"></div>
+					</div>
+				</div>
+			</div>
+			<div class="panel-footer device-model-dev-name"
+				th:text='${device.getInfo().get("model") + " - " + device.getInfo().get("dev_name")}'>Panel
+				footer</div>
+		</div>
 
-            <a href="#" th:href="@{/}" class="btn btn-default btn-lg" role="button">Back</a>
-        </div>
-    </body>
+		<a href="#" th:href="@{/}" class="btn btn-default btn-lg"
+			role="button">Back</a>
+
+		<script>
+			function initMap() {
+				var myLatLng = {
+					lat : 42.646142,
+					lng : 23.382803
+				};
+
+				var map = new google.maps.Map(document.getElementById('map'), {
+					zoom : 15,
+					center : myLatLng
+				});
+
+				var marker = new google.maps.Marker({
+					position : myLatLng,
+					map : map,
+					title : 'Night Light Plug'
+				});
+			}
+		</script>
+		<script th:inline="text" async="async" defer="defer"
+			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6dO_CL_ZAUiKiOfr_WQsVBjFGEasGO0U&amp;callback=initMap">
+			
+		</script>
+	</div>
+</body>
 </html>
