@@ -16,7 +16,7 @@
        * element that contains the map. */
 #map {
 	width: 100%;
-	height: 100px;
+	height: 150px;
 	background-color: grey;
 }
 </style>
@@ -56,7 +56,7 @@
 							<dd>
 								<a href="#" class="btn btn-md" role="button"
 									th:classappend='${device.getInfo().get("led_off") == "0"} ? btn-success : btn-danger'><span
-									class="glyphicon glyphicon-off" aria-hidden="true"></span></a>
+									class="glyphicon glyphicon-star-empty" aria-hidden="true"></span></a>
 							</dd>
 							<dt>Current Consumption</dt>
 							<dd>
@@ -68,7 +68,7 @@
 								<span class="energy"
 									th:text='${device.getEnergyData().getEnergy()}'>0</span> kWh
 							</dd>
-							<dt>Current Voltage</dt>
+							<dt>Voltage</dt>
 							<dd>
 								<span class="now-voltage"
 									th:text='${device.getEnergyData().getNowVoltage()}'>0</span> V
@@ -96,8 +96,8 @@
 		<script>
 			function initMap() {
 				var myLatLng = {
-					lat : 42.646142,
-					lng : 23.382803
+					lat : 42.648929,
+					lng : 23.379154
 				};
 
 				var map = new google.maps.Map(document.getElementById('map'), {
