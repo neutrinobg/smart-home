@@ -6,6 +6,8 @@
 package bg.neutrino.controllers;
 
 import bg.neutrino.DeviceList;
+import bg.neutrino.DeviceProperties;
+
 import java.io.IOException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,6 +25,8 @@ public class DevicesView {
     String devices(Model model) throws IOException {
         model.addAttribute("page", "devices");
         model.addAttribute("devices", DeviceList.getAsArrayList());
+        DeviceProperties dp = new DeviceProperties();
+        model.addAttribute("googleMapsApiKey", dp.get().getProperty("google.maps.api.key"));
         return "devices/index";
     }
 

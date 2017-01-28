@@ -38,7 +38,7 @@
 				without title</div>
 			<div class="panel-body">
 				<div class="row">
-					<div class="col-xs-6 col-sm-6 col-md-2">
+					<div class="col-xs-4 col-sm-4 col-md-2">
 						<div class="btn-group" role="group" aria-label="Controls">
 							<button class="btn btn-lg" role="button"
 								th:classappend='${device.getInfo().get("relay_state") == "1"} ? btn-success : btn-default'>
@@ -50,58 +50,60 @@
 							</button>
 						</div>
 					</div>
-					<div class="col-xs-6 col-sm-6 col-md-4">
-						<dl class="dl-horizontal">
-							<dt>Device is</dt>
-							<dd>
-								<span class="relay-state"
-									th:text='${device.getInfo().get("relay_state") == "1"} ? ON : OFF'>OFF</span>
-							</dd>
-							<dt>LED is</dt>
-							<dd>
-								<span class="led-off"
-									th:text='${device.getInfo().get("led_off") == "0"} ? ON : OFF'>OFF</span>
-							</dd>
-							<dt>Current Consumption</dt>
-							<dd>
-								<span class="now-power"
-									th:text='${device.getEnergyData().getNowPower()}'>0</span> W
-							</dd>
-							<dt>Total Consumption</dt>
-							<dd>
-								<span class="energy"
-									th:text='${device.getEnergyData().getEnergy()}'>0</span> kWh
-							</dd>
-							<dt>Voltage</dt>
-							<dd>
-								<span class="now-voltage"
-									th:text='${device.getEnergyData().getNowVoltage()}'>0</span> V
-							</dd>
-							<dt>Current</dt>
-							<dd>
-								<span class="now-current"
-									th:text='${device.getEnergyData().getNowCurrent()}'>0</span>
-							</dd>
-							<dt>Device type</dt>
-							<dd>
-								<span class="type" th:text='${device.getInfo().get("type")}'>Device
-									type</span>
-							</dd>
-							<dt>Latitude</dt>
-							<dd>
-								<span class="latitude"
-									th:text='${device.getInfo().get("latitude")}'>0</span>
-							</dd>
-							<dt>Longitude</dt>
-							<dd>
-								<span class="longitude"
-									th:text='${device.getInfo().get("longitude")}'>0</span>
-							</dd>
-						</dl>
+					<div class="col-xs-8 col-sm-8 col-md-4">
+						<table class="table table-condensed table-hover">
+							<tbody>
+								<tr>
+									<th class="text-right">Device is</th>
+									<td><span class="relay-state"
+										th:text='${device.getInfo().get("relay_state") == "1"} ? ON : OFF'>OFF</span></td>
+								</tr>
+								<tr>
+									<th class="text-right">LED is</th>
+									<td><span class="led-off"
+										th:text='${device.getInfo().get("led_off") == "0"} ? ON : OFF'>OFF</span></td>
+								</tr>
+								<tr>
+									<th class="text-right">Current Consumption</th>
+									<td><span class="now-power"
+										th:text='${device.getEnergyData().getNowPower()}'>0</span> W</td>
+								</tr>
+								<tr>
+									<th class="text-right">Total Consumption</th>
+									<td><span class="energy"
+										th:text='${device.getEnergyData().getEnergy()}'>0</span> kWh</td>
+								</tr>
+								<tr>
+									<th class="text-right">Voltage</th>
+									<td><span class="now-voltage"
+										th:text='${device.getEnergyData().getNowVoltage()}'>0</span> V</td>
+								</tr>
+								<tr>
+									<th class="text-right">Current</th>
+									<td><span class="now-current"
+										th:text='${device.getEnergyData().getNowCurrent()}'>0</span></td>
+								</tr>
+								<tr>
+									<th class="text-right">Device type</th>
+									<td><span class="type"
+										th:text='${device.getInfo().get("type")}'>Device type</span></td>
+								</tr>
+								<tr>
+									<th class="text-right">Latitude</th>
+									<td><span class="latitude"
+									th:text='${device.getInfo().get("latitude")}'>0</span></td>
+								</tr>
+								<tr>
+									<th class="text-right">Longitude</th>
+									<td><span class="longitude"
+									th:text='${device.getInfo().get("longitude")}'>0</span></td>
+								</tr>
+							</tbody>
+						</table>
 					</div>
 					<div class="col-xs-12 col-sm-12 col-md-6">
 						<div class="panel panel-default">
-							<div class="panel-heading location-address">Location</div>
+							<div class="panel-heading location-address">Location:</div>
 							<div class="panel-body">
 								<div id="map"></div>
 							</div>
@@ -142,7 +144,8 @@
 				}, function(results, status) {
 					if (status === 'OK') {
 						if (results[1]) {
-							jQuery('.location-address').text(results[1].formatted_address);
+							jQuery('.location-address').text(
+									'Location: ' + results[1].formatted_address);
 						} else {
 							window.alert('No result found');
 						}
@@ -153,7 +156,7 @@
 			}
 		</script>
 		<script th:inline="text" async="async" defer="defer"
-			src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC6dO_CL_ZAUiKiOfr_WQsVBjFGEasGO0U&amp;callback=initMap">
+			th:src="@{https://maps.googleapis.com/maps/api/js(key=${googleMapsApiKey}, callback='initMap')}">
 			
 		</script>
 	</div>
