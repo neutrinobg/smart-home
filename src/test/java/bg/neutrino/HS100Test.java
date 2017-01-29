@@ -29,7 +29,8 @@ public class HS100Test {
     
     @BeforeClass
     public static void setUpClass() {
-        instance = new HS110("84.40.125.153");
+        //instance = new HS110("84.40.125.153");
+    	instance = new HS110("192.168.0.125");
         try {
 			instance.nightModeOff();
 		} catch (IOException e) {
@@ -132,7 +133,7 @@ public class HS100Test {
     @Test
     public void testIsPresent_0args() {
         System.out.println("isPresent");
-        HS100 instance = new HS110("84.40.125.153");
+        HS100 instance = new HS110("192.168.0.125");
         //instance = new HS110("192.168.0.125");
         boolean expResult = true;
         boolean result = instance.isPresent();
@@ -161,7 +162,7 @@ public class HS100Test {
     @Test
     public void testSwitchOn() throws Exception {
         System.out.println("switchOn");
-        HS100 instance = new HS110("84.40.125.153");
+        HS100 instance = new HS110("192.168.0.125");
         boolean expResult = true;
         boolean result = instance.switchOn();
         assertEquals(expResult, result);
@@ -173,7 +174,7 @@ public class HS100Test {
     @Test
     public void testSwitchOff() throws Exception {
         System.out.println("switchOff");
-        HS100 instance = new HS110("84.40.125.153");
+        HS100 instance = new HS110("192.168.0.125");
         boolean expResult = true;
         boolean result = instance.switchOff();
         assertEquals(expResult, result);
@@ -185,7 +186,7 @@ public class HS100Test {
     @Test
     public void testNightModeOn() throws Exception {
         System.out.println("nightModeOn");
-        HS100 instance = new HS110("84.40.125.153");
+        HS100 instance = new HS110("192.168.0.125");
         boolean expResult = true;
         boolean result = instance.nightModeOn();
         assertEquals(expResult, result);
@@ -197,7 +198,7 @@ public class HS100Test {
     @Test
     public void testNightModeOff() throws Exception {
         System.out.println("nightModeOff");
-        HS100 instance = new HS110("84.40.125.153");
+        HS100 instance = new HS110("192.168.0.125");
         boolean expResult = true;
         boolean result = instance.nightModeOff();
         assertEquals(expResult, result);
