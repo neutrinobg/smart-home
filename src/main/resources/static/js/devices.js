@@ -146,31 +146,36 @@ DEVICES.detailsUpdate = function() {
 	
 	clearTimeout(that.timeoutID);
 
-	this.getList().done(function(data) {
-		if (jQuery.isArray(data)) {
-			jQuery.each(data, function(index, value) {
-				// console.info(value);
-				if (!DEVICES.isInAction) {
+	if (!DEVICES.isInAction) {
+		this.getList().done(function(data) {
+			if (jQuery.isArray(data)) {
+				jQuery.each(data, function(index, value) {
+					// console.info(value);
 					that.processDeviceValue(value);
-				}
-			});
-		}
-		jQuery('#alertDiv').addClass('hidden');
-	}).fail(function(jqXHR, textStatus, errorThrown) {
-		jQuery('#alertDiv').text(textStatus + ", " + errorThrown)
-				.removeClass('hidden');
-		// console.error(textStatus + ", " + errorThrown);
-	}).always(function(jqXHR, textStatus) {
-		if (typeof waitTimeoutId !== "undefined" && waitTimeoutId) {
-			clearTimeout(waitTimeoutId);
-			jQuery('.wait-gif').addClass('hidden');
-		}
+				});
+			}
+			jQuery('#alertDiv').addClass('hidden');
+		}).fail(function(jqXHR, textStatus, errorThrown) {
+			jQuery('#alertDiv').text(textStatus + ", " + errorThrown)
+					.removeClass('hidden');
+			// console.error(textStatus + ", " + errorThrown);
+		}).always(function(jqXHR, textStatus) {
+			if (typeof waitTimeoutId !== "undefined" && waitTimeoutId) {
+				clearTimeout(waitTimeoutId);
+				jQuery('.wait-gif').addClass('hidden');
+			}
+			if (that.windowsIsFocused) {
+				that.timeoutID = setTimeout(jQuery.proxy(that.detailsUpdate,
+						that), timeout);
+			}
+			that.setWindowFocusedEvent(jQuery.proxy(that.detailsUpdate, that));
+		});
+	} else {
 		if (that.windowsIsFocused) {
 			that.timeoutID = setTimeout(jQuery.proxy(that.detailsUpdate,
 					that), timeout);
 		}
-		that.setWindowFocusedEvent(jQuery.proxy(that.detailsUpdate, that));
-	});
+	}
 };
 
 DEVICES.switchOnOff = function(obj) {
