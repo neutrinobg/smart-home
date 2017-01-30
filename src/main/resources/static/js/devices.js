@@ -10,6 +10,8 @@ DEVICES.url = "/api/devices";
 
 DEVICES.timeoutID;
 
+DEVICES.isInAction = false;
+
 DEVICES.windowsIsFocused = true;
 DEVICES.windowsFocusedEventIsSet = false;
 
@@ -92,50 +94,65 @@ DEVICES.homeUpdate = function() {
 	});
 };
 
+DEVICES.processDeviceValue = function(value) {
+	var contextSelector = "div[data-device-id='" + value.info.deviceId + "']";
+	
+	// Actions
+	jQuery('.device-alias', contextSelector).text(value.info.alias);
+	var relayState = ((value.info.relay_state == "1") ? "ON" : "OFF")
+	jQuery('.relay-state', contextSelector).text(relayState);
+	if (relayState == "ON") {
+		jQuery('.btn-switch-on-off', contextSelector)
+		.removeClass('btn-default').addClass('btn-success');
+	} else {
+		jQuery('.btn-switch-on-off', contextSelector)
+		.removeClass('btn-success').addClass('btn-default');
+	}
+	jQuery('.btn-switch-on-off', contextSelector)
+	.data('relayState', value.info.relay_state);
+	var ledOff = ((value.info.led_off == "0") ? "ON" : "OFF")
+	jQuery('.led-off', contextSelector).text(ledOff);
+	if (ledOff == "ON") {
+		jQuery('.btn-led-on-off', contextSelector)
+		.removeClass('btn-default').addClass('btn-success');
+	} else {
+		jQuery('.btn-led-on-off', contextSelector)
+		.removeClass('btn-success').addClass('btn-default');
+	}
+	jQuery('.btn-led-on-off', contextSelector)
+	.data('ledOff', value.info.led_off);
+	// Energy data
+	jQuery('.now-power', contextSelector).text(value.energyData.nowPower);
+	jQuery('.energy', contextSelector).text(value.energyData.energy);
+	jQuery('.now-voltage', contextSelector).text(value.energyData.nowVoltage);
+	jQuery('.now-current', contextSelector).text(value.energyData.nowCurrent);
+	// Location
+	var myLatLng = {
+		lat : 0,
+		lng : 0
+	};
+	myLatLng.lat = value.info.latitude;
+	myLatLng.lng = value.info.longitude;
+	var locText = "Coordinates: [" + myLatLng.lat + ", " + myLatLng.lng + "]";
+	if (jQuery('.lat-lng', contextSelector).text() != locText) {
+		jQuery('.lat-lng', contextSelector).text(locText);
+		// TODO
+	}
+};
+
 DEVICES.detailsUpdate = function() {
 	var that = this;
 	var timeout = 5000;
+	
+	clearTimeout(that.timeoutID);
 
 	this.getList().done(function(data) {
 		if (jQuery.isArray(data)) {
 			jQuery.each(data, function(index, value) {
 				// console.info(value);
-				var contextSelector = "div[data-deviceId='" + value.info.deviceId + "']";
-				
-				// Actions
-				jQuery('.device-alias', contextSelector).text(value.info.alias);
-				var relayState = ((value.info.relay_state == "1") ? "ON" : "OFF")
-				jQuery('.relay-state', contextSelector).text(relayState);
-				if (relayState == "ON") {
-					jQuery('.btn-switch-on-off', contextSelector)
-					.removeClass('btn-default').addClass('btn-success');
-				} else {
-					jQuery('.btn-switch-on-off', contextSelector)
-					.removeClass('btn-success').addClass('btn-default');
+				if (!DEVICES.isInAction) {
+					that.processDeviceValue(value);
 				}
-				var ledOff = ((value.info.led_off == "0") ? "ON" : "OFF")
-				jQuery('.led-off', contextSelector).text(ledOff);
-				if (ledOff == "ON") {
-					jQuery('.btn-led-on-off', contextSelector)
-					.removeClass('btn-default').addClass('btn-success');
-				} else {
-					jQuery('.btn-led-on-off', contextSelector)
-					.removeClass('btn-success').addClass('btn-default');
-				}
-				// Energy data
-				jQuery('.now-power', contextSelector).text(value.energyData.nowPower);
-				jQuery('.energy', contextSelector).text(value.energyData.energy);
-				jQuery('.now-voltage', contextSelector).text(value.energyData.nowVoltage);
-				jQuery('.now-current', contextSelector).text(value.energyData.nowCurrent);
-				// Location
-				var myLatLng = {
-					lat : 0,
-					lng : 0
-				};
-				myLatLng.lat = value.info.latitude;
-				myLatLng.lng = value.info.longitude;
-				var locText = "Coordinates: [" + myLatLng.lat + ", " + myLatLng.lng + "]";
-				jQuery('.lat-lng', contextSelector).text(locText);
 			});
 		}
 		jQuery('#alertDiv').addClass('hidden');
@@ -153,5 +170,71 @@ DEVICES.detailsUpdate = function() {
 					that), timeout);
 		}
 		that.setWindowFocusedEvent(jQuery.proxy(that.detailsUpdate, that));
+	});
+};
+
+DEVICES.switchOnOff = function(obj) {
+	DEVICES.isInAction = true;
+	
+	var that = this;
+	var jqButton = jQuery(obj);
+	var relayState = jqButton.data('relayState');
+	var id = jqButton.parents('.panel').last().data('deviceId');
+	var contextSelector = "div[data-device-id='" + id + "']";
+	var url = this.url + "/" + id;
+	
+	relayState = ((relayState == 1) ? 0 : 1);
+	jqButton.prop('disabled', true);
+	jQuery('.btn-led-on-off', contextSelector).prop('disabled', true);
+	jQuery.ajax({
+		method : 'POST',
+		url : url,
+		contentType : 'application/json',
+		data : JSON.stringify({relay_state : relayState, led_off : parseInt(jQuery('.btn-led-on-off', contextSelector).data('ledOff'))}),
+		dataType : 'json'
+	}).done(function(data) {
+		that.processDeviceValue(data);
+		jQuery('#alertDiv').addClass('hidden');
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		jQuery('#alertDiv').text(textStatus + ", " + errorThrown)
+		.removeClass('hidden');
+		// console.error(textStatus + ", " + errorThrown);
+	}).always(function(jqXHR, textStatus) {
+		jqButton.prop('disabled', false);
+		jQuery('.btn-led-on-off', contextSelector).prop('disabled', false);
+		DEVICES.isInAction = false;
+	});
+};
+
+DEVICES.ledOnOff = function(obj) {
+	DEVICES.isInAction = true;
+	
+	var that = this;
+	var jqButton = jQuery(obj);
+	var ledOff = jqButton.data('ledOff');
+	var id = jqButton.parents('.panel').last().data('deviceId');
+	var contextSelector = "div[data-device-id='" + id + "']";
+	var url = this.url + "/" + id;
+	
+	ledOff = ((ledOff == 1) ? 0 : 1);
+	jqButton.prop('disabled', true);
+	jQuery('.btn-switch-on-off', contextSelector).prop('disabled', true);
+	jQuery.ajax({
+		method : 'POST',
+		url : url,
+		contentType : 'application/json',
+		data : JSON.stringify({relay_state : parseInt(jQuery('.btn-switch-on-off', contextSelector).data('relayState')), led_off : ledOff}),
+		dataType : 'json'
+	}).done(function(data) {
+		that.processDeviceValue(data);
+		jQuery('#alertDiv').addClass('hidden');
+	}).fail(function(jqXHR, textStatus, errorThrown) {
+		jQuery('#alertDiv').text(textStatus + ", " + errorThrown)
+		.removeClass('hidden');
+		// console.error(textStatus + ", " + errorThrown);
+	}).always(function(jqXHR, textStatus) {
+		jqButton.prop('disabled', false);
+		jQuery('.btn-switch-on-off', contextSelector).prop('disabled', false);
+		DEVICES.isInAction = false;
 	});
 };

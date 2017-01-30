@@ -35,7 +35,7 @@
 		</div>
 
 		<div class="panel panel-primary" th:each="device,iter : ${devices}"
-			th:attr='data-deviceId=${device.getInfo().get("deviceId")}'>
+			th:attr='data-device-id=${device.getInfo().get("deviceId")}'>
 			<input class="device-id" type="hidden" value=""
 				th:value='${device.getInfo().get("deviceId")}' />
 			<div class="panel-heading device-alias"
@@ -64,11 +64,15 @@
 								<div class="text-center">
 									<div class="btn-group" role="group" aria-label="Controls">
 										<button class="btn btn-lg btn-switch-on-off" role="button"
-											th:classappend='${device.getInfo().get("relay_state") == "1"} ? btn-success : btn-default'>
+											th:classappend='${device.getInfo().get("relay_state") == "1"} ? btn-success : btn-default'
+											th:attr='data-relay-state=${device.getInfo().get("relay_state")}'
+											onclick="DEVICES.switchOnOff(this)">
 											<span class="glyphicon glyphicon-off" aria-hidden="true"></span>
 										</button>
 										<button class="btn btn-lg btn-led-on-off" role="button"
-											th:classappend='${device.getInfo().get("led_off") == "0"} ? btn-success : btn-default'>
+											th:classappend='${device.getInfo().get("led_off") == "0"} ? btn-success : btn-default'
+											th:attr='data-led-off=${device.getInfo().get("led_off")}'
+											onclick="DEVICES.ledOnOff(this)">
 											<span class="glyphicon glyphicon-eye-close"
 												aria-hidden="true"></span>
 										</button>
@@ -102,7 +106,7 @@
 										<tr>
 											<th class="text-right">Current</th>
 											<td><span class="now-current"
-												th:text='${device.getEnergyData().getNowCurrent()}'>0</span></td>
+												th:text='${device.getEnergyData().getNowCurrent()}'>0</span> A</td>
 										</tr>
 										<!-- <tr>
 											<th class="text-right">Device type</th>
