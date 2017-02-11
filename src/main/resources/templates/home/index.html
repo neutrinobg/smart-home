@@ -31,31 +31,16 @@
 				<a id="devicesBtn" class="btn btn-success btn-lg" href="#"
 					th:href="@{/devices}" role="button">View devices</a>
 			</p>
-			<p>Please login to get full control.</p>
-			<p>
-				<a class="btn btn-primary btn-lg g-signin2" href="#" role="button"
-					data-onsuccess="onSignIn">Login</a>
+			<p th:if="${user.getIsGuest()} == true">Please login to get full control.</p>
+			<p th:if="${user.getIsGuest()} == true">
+				<a class="btn btn-primary btn-lg" href="#" th:href="@{/login}"
+					role="button">Login</a>
 			</p>
 		</div>
-		<script th:inline="text" async="async" defer="defer"
-			src="https://apis.google.com/js/platform.js">
-			
-		</script>
 		<script>
 			jQuery(document).ready(function() {
 				DEVICES.homeUpdate();
 			});
-			function onSignIn(googleUser) {
-				var id_token = googleUser.getAuthResponse().id_token;
-				jQuery.ajax({
-					method : 'POST',
-					url : '/auth',
-					data : id_token,
-					dataType : 'json'
-				}).done(function(data) {
-					console.log(data);
-				});
-			}
 		</script>
 	</div>
 </body>

@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html layout:decorator="layout">
+<head>
+<meta name="google-signin-client_id"
+	th:attr="content=${googleOAuth2ApiKey}" />
+<title>Login</title>
+<link href="../../../resources/static/css/bootstrap.min.css"
+	rel="stylesheet" media="screen" th:href="@{/css/bootstrap.min.css}" />
+<link href="../../../resources/static/css/core.css" rel="stylesheet"
+	media="screen" th:href="@{/css/core.css}" />
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="../../../resources/static/js/bootstrap.min.js"
+	th:src="@{/js/bootstrap.min.js}"></script>
+</head>
+<body>
+
+	<!--/*  */-->
+	<div layout:fragment="content">
+		<div id="alertDiv" class="alert alert-danger hidden" role="alert"></div>
+
+		<div class="page-header">
+			<h1>
+				Login with Google Account
+			</h1>
+		</div>
+
+		<div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+
+		<script th:inline="text" async="async" defer="defer"
+			src="https://apis.google.com/js/platform.js">
+			
+		</script>
+		<script>
+			function onSignIn(googleUser) {
+				var id_token = googleUser.getAuthResponse().id_token;
+				jQuery.ajax({
+					method : 'POST',
+					url : '/authGoogle',
+					data : id_token,
+					dataType : 'json'
+				}).done(function(data) {
+					console.log(data);
+					location.href = '/';
+				});
+			}
+		</script>
+	</div>
+</body>
+</html>

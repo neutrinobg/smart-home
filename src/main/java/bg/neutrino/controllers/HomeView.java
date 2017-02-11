@@ -5,19 +5,28 @@
  */
 package bg.neutrino.controllers;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+
+import bg.neutrino.Base;
+import bg.neutrino.User;
 
 /**
  *
  * @author atonkin
  */
 @Controller
-public class HomeView {
+public class HomeView extends Base{
 
     @RequestMapping(path = "/", method = RequestMethod.GET)
-    String home() {
+    String home(Model model, HttpSession httpSession) {
+    	User user = getSessionUser(httpSession);
+    	//System.out.println(httpSession.getId());
+    	model.addAttribute("user", user);
         return "home/index";
     }
 

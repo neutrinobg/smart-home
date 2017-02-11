@@ -13,7 +13,7 @@ public class User {
     private String id;
     private String email;
     private String name;
-    private boolean isGuest;
+    private boolean isGuest = true;
 
     public String getId() {
         return id;
@@ -39,7 +39,7 @@ public class User {
         this.name = name;
     }
 
-    public boolean isIsGuest() {
+    public boolean getIsGuest() {
         return isGuest;
     }
 
