@@ -36,6 +36,10 @@
 				<a class="btn btn-primary btn-lg" href="#" th:href="@{/login}"
 					role="button">Login</a>
 			</p>
+			<p th:if="${not user.getIsGuest()}">
+				<a class="btn btn-primary btn-lg" href="#" th:href="@{/logout}"
+					role="button">Logout</a>
+			</p>
 		</div>
 		<script>
 			jQuery(document).ready(function() {
